@@ -72,4 +72,36 @@ class AuthController extends Controller
 
 
 
+
+    public function updateProfile(Request $request)
+
+    {
+    
+        $user = Auth::user();
+    
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|min:2|max:100',
+            'email' => 'required|string|email|max:100|unique:users,email,' . $user->id,
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+    
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            // Update other fields as needed
+        ]);
+    
+        return response()->json([
+            'message' => 'Profile updated successfully',
+            'user' => $user,
+        ]);
+    }
+
+    
+
+    
+
 }
